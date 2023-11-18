@@ -15,7 +15,7 @@ typedef struct st
 void push(elem **top, int dta)
 {   
     elem *adr = malloc(sizeof(elem)); 
-    {
+    if(adr==NULL){
         exit(STACK_OVERFLOW); 
     }
     adr->prev = *top; 
@@ -63,7 +63,7 @@ size_t getSize(const elem *top)
 void main(int cnames, char *fnames[])
 {
     elem *top = NULL;//создать указатель на вершину, т.е. объявить создание стека
-    size_t stcksize = 1447;//объявить размер стека
+    size_t stcksize = 14470;//объявить размер стека
     FILE *ff = fopen(fnames[1], "r");//открыть файл, где содержится выражение в постфиксной записи
     if (ff == NULL)//проверка файла на наличие
     {
@@ -83,19 +83,19 @@ void main(int cnames, char *fnames[])
             b = pop2(&top);//занести в стек результат
             if (ch == '+')
             {
-                push(&top, a + b);
+                push(&top, b + a);
             }
             else if (ch == '-')
             {
-                push(&top, a - b);
+                push(&top, b - a);
             }
             else if (ch == '*')
             {
-                push(&top, a * b);
+                push(&top, b * a);
             }
             else if (ch == '/')
             {
-                push(&top, a / b);
+                push(&top, b / a);
             }
         }
     }

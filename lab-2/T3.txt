@@ -1,0 +1,7 @@
+malina 44
+kartoshka 65
+voda 10
+derevo 900
+poxod_na_goru 22
+noyabr 87
+musik 111

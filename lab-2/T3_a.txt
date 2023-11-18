@@ -1,0 +1,7 @@
+derevo 900.0
+musik 111.0
+noyabr 87.0
+kartoshka 65.0
+malina 44.0
+poxod_na_goru 22.0
+voda 10.0

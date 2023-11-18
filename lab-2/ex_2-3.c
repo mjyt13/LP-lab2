@@ -46,7 +46,7 @@ int main(int args, char * fname[]){
             return 0;
         }
         for(int k=0;k<coun;k++){
-            fprintf(OM,"%s %.1f",objs[k].name,objs[k].vol);
+            fprintf(OM,"%s %.1f\n",objs[k].name,objs[k].vol);
         }
         fclose(OM);
         printf("SUCCESS\n");

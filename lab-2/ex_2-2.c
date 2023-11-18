@@ -22,10 +22,9 @@ void main(int args, char* fname[]){
     for(int i=0;i<r;i++){
         intmass[i]=rand();
         floatmass[i]=intmass[i];
-        for(int j=0;j<quantity(intmass[i]);j++){//происходит создание числа с плавающей точкой за счёт деления целого числа на количество его цифр
+        for(int j=0;j<quantity(intmass[i]);j++){//происходит создание числа с плавающей точкой за счёт деления целого числа на 10 в степени количества его цифр
             floatmass[i]=floatmass[i]/10;
         }
-        printf("%d - %f\n",intmass[i],floatmass[i]);
     }
     for(int i=0;i<r;i++){//происходит сортировка массива в цикле
         int j=i;
@@ -45,7 +44,7 @@ void main(int args, char* fname[]){
         printf("%f\n",floatmass[i]);//выводится в консоль массив отсортированных чисел
     }
     
-    for(int i=1;i<r;i++){
+    for(int i=0;i<r;i++){
         char charmass[quantity(intmass[i])+2];//создаётся массив символов, где элементов на 2 больше,чем в целом числе(точка и ноль)
         sprintf(charmass,"%lf",floatmass[i]);
         fprintf(InvNums,"%s\n",charmass);
