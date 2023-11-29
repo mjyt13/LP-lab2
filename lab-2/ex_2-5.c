@@ -6,55 +6,51 @@
 #define STACK_UNDERFLOW -101
 #define FILE_NOT_FOUND -111
 
-typedef struct st
-{
-    int data;
+typedef struct st{//объявляется тип Структура, содержащая указатель на следующий элемент(Узел стека)
+    double data;
     struct st *prev;
-} elem;
+}elem;
 
-void push(elem **top, int dta)
-{   
-    elem *adr = malloc(sizeof(elem)); 
-    if(adr==NULL){
-        exit(STACK_OVERFLOW); 
+void push(elem **top, double dta, int size, int max_size){//Добавить элемент
+    elem * adr = malloc(sizeof(elem));//Выделить память и вернуть адрес элемента 
+    if(adr==NULL||size>max_size){
+        printf("STACK IS OVERFLOW");
+        exit(STACK_OVERFLOW);//проверка на переполненность
     }
-    adr->prev = *top; 
-    adr->data = dta;  
-    *top = adr;      
+    adr->prev = *top;//обратиться по адресу элемента и в поле указателя на пред. элемент указать адрес вершины
+    adr->data = dta;//обратиться по адресу элемента и в поле данных указать данные
+    *top = adr;//в адрес вершины записать адрес узла
+
+    size++;
 }
 
-int pop2(elem **top)
-{ 
-    elem *out;
-    int dta;
-    if (*top == NULL)
-    {
-        printf("STACK IS EMPTY-1\n");
+double pop2(elem **top, int size){//Удалить элемент и вернуть данные 
+    elem * out;//создать указатель на элемент
+    double dta;
+    if(*top==NULL){
+        printf("STACK IS EMPTY\n");
         exit(STACK_UNDERFLOW);
     }
-    out = *top;
-    *top = (*top)->prev;
+    out = *top;//присвоить указателю адрес вершины стека
+    *top = (*top)->prev;//указателю на вершину присвоить адрес предыдущего элемента
     dta = out->data;
-    free(out);
-    return dta;
+    free(out);//освободить память
+    size--;
+    return dta;//вернуть данные из элемента
 }
 
-int peek(elem *top)
-{
-    if (top == NULL)
-    {
-        printf("STACK IS EMPTY-2\n");
+double peek(elem *top){
+    if(top==NULL){
+        printf("STACK IS EMPTY\n");
         exit(STACK_UNDERFLOW);
     }
     return top->data;
 }
 
-size_t getSize(const elem *top)
-{
-    size_t size = 0;
-    while (top)
-    {
-        size += sizeof(elem);
+int getSize(const elem *top){//Узнать размер стека
+    int size = 0;//создать переменную, фиксирующую размер
+    while(top){//добавлять число, равное размеру узла и переходить к следующему элементу
+        size++;
         top = top->prev;
     }
     return size;
@@ -62,46 +58,49 @@ size_t getSize(const elem *top)
 
 void main(int cnames, char *fnames[])
 {
-    elem *top = NULL;//создать указатель на вершину, т.е. объявить создание стека
-    size_t stcksize = 14470;//объявить размер стека
-    FILE *ff = fopen(fnames[1], "r");//открыть файл, где содержится выражение в постфиксной записи
-    if (ff == NULL)//проверка файла на наличие
+    elem *top = NULL;
+    int stack_size = 1447;
+    int size = 0;
+    FILE *ff = fopen(fnames[1], "r");
+    if (ff == NULL)
     {
         printf("FilE NOT FOUND");
         exit(FILE_NOT_FOUND);
     }
     char ch;
-    int a, b, result;//объявление переменных, с которыми будет происходить работа
+    double a, b;
     while ((ch = fgetc(ff)) != EOF){
         if (isdigit(ch))
-        {//если символ - цифра, занести его в стек
-            push(&top, ch - '0');
-        }//если символ - действие, то действия будут иные
+        {
+            push(&top, ch - '0',size, stack_size);
+            printf("%lf\n",peek(top));
+        }
         else if (ch == '+' || ch == '-' || ch == '*' || ch == '/')
-        {//достать числа из стека
-            a = pop2(&top);//записать их в переменные и выполнить действия
-            b = pop2(&top);//занести в стек результат
-            if (ch == '+')
+        {
+            a = pop2(&top,size);
+            b = pop2(&top,size);
+            switch (ch)
             {
-                push(&top, b + a);
-            }
-            else if (ch == '-')
-            {
-                push(&top, b - a);
-            }
-            else if (ch == '*')
-            {
-                push(&top, b * a);
-            }
-            else if (ch == '/')
-            {
-                push(&top, b / a);
+            case '+':
+                push(&top, a + b,size,stack_size);
+                break;
+            case '-':
+                push(&top, a - b,size,stack_size);
+                break;
+            case '*':
+                push(&top, a * b,size,stack_size);
+                break;
+            case '/':
+                push(&top, a / b,size,stack_size);
+                break;
+            default:
+                break;
             }
         }
     }
-    fclose(ff);//закрыть файл
-    if(top!=NULL){//вывести результат консоль
-        printf("результат равен %d\n", pop2(&top));
+    fclose(ff);
+    if(top!=NULL){
+        printf("результат равен %lf\n", pop2(&top,size));
     }else{
         printf("стек пуст\n");
     }

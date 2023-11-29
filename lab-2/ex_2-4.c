@@ -3,78 +3,78 @@
 #include <malloc.h>
 #define STACK_OVERFLOW -100
 #define STACK_UNDERFLOW -101
-
-typedef struct st{//объявляется тип Структура, содержащая указатель на следующий элемент(Узел стека)
-    int data;
+struct st{//объявляется тип Структура, содержащая указатель на следующий элемент(Узел стека)
+    double data;
     struct st *prev;
-}elem;
+};
 
-void push(elem **top, int dta){//Добавить элемент
-    elem * adr = malloc(sizeof(elem));//Выделить память и вернуть адрес элемента 
-    if(adr==NULL){
-        printf("STACK IS OVERFLOW");
-        exit(STACK_OVERFLOW);//проверка на переполненность
+struct Stack{
+    double size;
+    struct st * top;
+};
+
+void push(struct Stack * stack, double data, int maxsize){//Добавить элемент
+    if(stack->size>=maxsize){
+        printf("STACK IS OVERFLOW\n");
+        exit(STACK_OVERFLOW);
     }
-    adr->prev = *top;//обратиться по адресу элемента и в поле указателя на пред. элемент указать адрес вершины
-    adr->data = dta;//обратиться по адресу элемента и в поле данных указать данные
-    *top = adr;//в адрес вершины записать адрес узла
+    struct st * adr = malloc(sizeof(struct st));
+    adr->data=data;
+    adr->prev=stack->top;
+    stack->top=adr;
+    stack->size++;
 }
 
-int pop2(elem **top){//Удалить элемент и вернуть данные 
-    elem * out;//создать указатель на элемент
-    int dta;
-    if(*top==NULL){
-        printf("STACK IS EMPTY\n");
+double pop(struct Stack * stack){
+    if(stack->top==NULL){
+        printf("STACK IS UNDERFLOW\n");
         exit(STACK_UNDERFLOW);
     }
-    out = *top;//присвоить указателю адрес вершины стека
-    *top = (*top)->prev;//указателю на вершину присвоить адрес предыдущего элемента
-    dta = out->data;
-    free(out);//освободить память
-    return dta;//вернуть данные из элемента
+    struct st * out = stack->top;
+    stack->top = stack->top->prev;
+    double data = out->data;
+    free(out);
+    stack->size--;
+    return data;
 }
 
-int peek(elem *top){
-    if(top==NULL){
-        printf("STACK IS EMPTY\n");
+double peek(struct Stack * stack){
+    if(stack->top==NULL){
+        printf("STACK IS UNDERFLOW\n");
         exit(STACK_UNDERFLOW);
     }
-    return top->data;
-}
-
-size_t getSize(const elem *top){//Узнать размер стека
-    size_t size = 0;//создать переменную, фиксирующую размер
-    while(top){//добавлять число, равное размеру узла и переходить к следующему элементу
-        size+=sizeof(elem);
-        top = top->prev;
-    }
-    return size;
+    struct st * out = stack->top;
+    double data = out->data;
+    return data;
 }
 
 void main(){
-    elem * top = NULL;//создать указатель, значением которого является ничего, следоваательно, создать стек
-    size_t stcksize = 44;//объявить размер, значение которого не должен превышать размер стека
-    int choice = -1;
+
+    int maxsize=55;
+    struct Stack * stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->top=NULL;
+    stack->size=0;
     printf("Введите 3 для прекращения работы, 2 для просмотра вершины стека, 1 для добавления элемента в стек и 0 для удаления\n");
-    while(getSize(top)<stcksize && choice!=3){//Запуск работы со стеком
+    int choice;
+    while(choice!=3){
         scanf("%d",&choice);
-        if(choice==1){
-            printf("Введите число для добавления в стек\n");
-            int num;
-            scanf("%d\n",&num);
-            push(&top,num);
-        }
-        if(choice==0){
-            printf("Удален %d\n",peek(top));
-            pop2(&top);
-        }
-        if(choice==2){
-            printf("Вершина равна %d\n",peek(top));
+        switch(choice){
+            case 0:
+                printf("Удален %lf\n",pop(stack));
+                break;
+            case 1:
+                printf("Введите число для добавления в стек\n");
+                double num;
+                scanf("%lf\n",&num);
+                push(stack,num,maxsize);
+                break;
+            case 2:
+                printf("Вершина равна %lf\n",peek(stack));
+                break;
+            default:
+                printf("Работа прекращена\n");
+                break;
         }
     }
-    if(getSize(top)>=stcksize){
-        printf("Стек переполнен, работа прекращена\n");
-    }else{
-        printf("Спасибо за работу\n");
-    }
+    printf("Спасибо за работу\n");
 }
