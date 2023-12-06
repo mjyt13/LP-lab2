@@ -82,19 +82,15 @@ void main(int cnames, char * fnames[]){
             {
             case '+':
                 push(stack, a + b,maxsize);
-                printf("inter %lf\n",peek(stack));
                 break;
             case '-':
                 push(stack, a - b,maxsize);
-                printf("inter %lf\n",peek(stack));
                 break;
             case '*':
                 push(stack, a * b,maxsize);
-                printf("inter %lf\n",peek(stack));
                 break;
             case '/':
                 push(stack, a / b,maxsize);
-                printf("inter %lf\n",peek(stack));
                 break;
             default:
                 break;
